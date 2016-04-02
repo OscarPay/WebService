@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -26,10 +27,14 @@ import java.text.SimpleDateFormat;
 public class FetchDataTask extends AsyncTask<String, Void, String[]> {
 
     private ArrayAdapter<String> adapter;
+    private FileOutputStream file;
+    private String jsonStringdays;
+
     public static final String LOG_TAG = FetchDataTask.class.getSimpleName();
 
-    public FetchDataTask(ArrayAdapter<String> adapter) {
+    public FetchDataTask(ArrayAdapter<String> adapter, FileOutputStream file) {
         this.adapter = adapter;
+        this.file = file;
     }
 
     @Override
@@ -93,13 +98,13 @@ public class FetchDataTask extends AsyncTask<String, Void, String[]> {
 
             result = buffer.toString();
 
-        } catch (MalformedURLException  e ) {
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (ProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }   finally {
+        } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
             }
@@ -107,12 +112,13 @@ public class FetchDataTask extends AsyncTask<String, Void, String[]> {
                 try {
                     reader.close();
                 } catch (final IOException e) {
-                    Log.e("LOG_TAG", "Error closing stream", e);
+                    Log.e(LOG_TAG, "Error closing stream", e);
                 }
             }
         }
 
         try {
+            this.jsonStringdays = result;
             return getWeatherDataFromJson(result, numDays);
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
@@ -125,12 +131,25 @@ public class FetchDataTask extends AsyncTask<String, Void, String[]> {
     @Override
     protected void onPostExecute(String[] days) {
         super.onPostExecute(days);
-        if(days != null) {
-            adapter.clear();
-            for (String dayForecastStr : days) {
-                adapter.add(dayForecastStr);
+        String eol = System.getProperty("line.separator");
+
+        if (days != null) {
+            try {
+                adapter.clear();
+                file.write(jsonStringdays.getBytes());
+
+                for (String dayForecastStr : days) {
+                    String info = dayForecastStr + eol;
+                    adapter.add(dayForecastStr);
+                    file.write(info.getBytes());
+                    file.flush();
+                }
+                file.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            //New data is back from the server
+
         }
 
     }
@@ -209,6 +228,7 @@ public class FetchDataTask extends AsyncTask<String, Void, String[]> {
         for (String s : resultStrs) {
             Log.v(LOG_TAG, "Forecast entry: " + s);
         }
+
         return resultStrs;
 
     }
