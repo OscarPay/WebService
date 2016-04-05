@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <TextView
+        android:layout_width="146dp"
+        android:layout_height="wrap_content"
+        android:text="Dispositivo vinculados"
+        android:id="@+id/textView"
+        android:layout_weight="0.04" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"></LinearLayout>
+
+    <ListView android:id="@+id/ListActivity"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:drawSelectorOnTop="false"
+        android:layout_weight="0.54" />
+
+    <TextView
+        android:layout_width="337dp"
+        android:layout_height="wrap_content"
+        android:text="Dispositivos encontrados"
+        android:id="@+id/textView2"
+        android:layout_weight="0.05" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="88dp"
+        android:id="@+id/listViewSearched"
+        android:layout_weight="0.21" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/button"
+        android:visibility="visible"
+        android:text="Search Devices" />
+
+</LinearLayout>
+
