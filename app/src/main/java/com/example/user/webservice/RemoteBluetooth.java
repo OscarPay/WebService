@@ -11,9 +11,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.File;
+import java.io.FileInputStream;
 
 public class RemoteBluetooth extends Activity {
 
@@ -58,22 +57,15 @@ public class RemoteBluetooth extends Activity {
 	}
 
     public void sendClickListener(View view){
-        BufferedReader input = null;
         try {
-            input = new BufferedReader(new InputStreamReader(getApplicationContext().openFileInput("dataFile.txt")));
-            String line = input.readLine();
+            File file = new File(getFilesDir(),"dataFile.txt");
+            FileInputStream fis = new FileInputStream(file);
 
-            thread1.sendData(line);
+            thread1.sendData(file,fis);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            this.finish();
         }
     }
 

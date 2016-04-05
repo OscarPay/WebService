@@ -6,6 +6,9 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -53,12 +56,19 @@ public class BToothConnectThread {
 		
 	}
 
-	public void sendData(String data) {
+	public void sendData(File file,FileInputStream data) {
         try {
-            out.write(data.getBytes());
+            byte[] bytearray = new byte[(int) file.length()];
+            BufferedInputStream bin = new BufferedInputStream(data);
+            bin.read(bytearray, 0, bytearray.length);
+			Log.d("DATA", bytearray.toString());
+            out.write(bytearray, 0,bytearray.length);
+            out.flush();
+            out.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
 	/*public void pgDown(){
